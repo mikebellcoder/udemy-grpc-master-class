@@ -22,4 +22,5 @@ func main() {
 
 	doGreet(c)
 
+	doGreetManyTimes(c)
 }
