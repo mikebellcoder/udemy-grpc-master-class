@@ -5,6 +5,7 @@ package calculator;
 option go_package = "github.com/mikebellcoder/udemy-grpc-master-class/calculator/proto";
 
 import "average.proto";
+import "max.proto";
 import "primes.proto";
 import "sum.proto";
 
@@ -12,4 +13,5 @@ service CalculatorService {
     rpc Sum(SumRequest) returns (SumResponse);
     rpc Primes(PrimeRequest) returns (stream PrimeResponse);
     rpc Average(stream AverageRequest) returns (AverageResponse);
+    rpc Max(stream MaxRequest) returns (stream MaxResponse);
 }
