@@ -9,23 +9,22 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func listBlog(c pb.BlogServiceClient) {
-	log.Println("---listBlog was invoked---")
+func listBlogs(c pb.BlogServiceClient) {
+	log.Println("---listbBlogs was invoked---")
+
 	stream, err := c.ListBlogs(context.Background(), &emptypb.Empty{})
 	if err != nil {
-		log.Fatalf("Error while callling ListBlogs: %v\n", err)
+		log.Fatalf("Error while calling listBlogs: %v\n", err)
 	}
 
 	for {
-		res, err := stream.Recv()
+		blog, err := stream.Recv()
 		if err == io.EOF {
 			break
+		} else if err != nil {
+			log.Fatalf("Error reading stream during listBlogs: %v\n", err)
 		}
 
-		if err != nil {
-			log.Fatalf("Something happened: %v\n", err)
-		}
-
-		log.Println(res)
+		log.Printf("Received blog: %v\n", blog)
 	}
 }
