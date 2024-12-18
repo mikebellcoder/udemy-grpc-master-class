@@ -2,10 +2,9 @@ package main
 
 import (
 	"log"
-	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 
 	pb "github.com/mikebellcoder/udemy-grpc-master-class/greet/proto"
 )
@@ -13,7 +12,18 @@ import (
 var svrAddr string = "localhost:5051"
 
 func main() {
-	conn, err := grpc.NewClient(svrAddr, grpc.WithTransportCredentials(insecure.NewCredentials())) // nb: using NewClient instead of Dial
+	opts := []grpc.DialOption{}
+	tls := true
+	if tls {
+		creds, err := credentials.NewClientTLSFromFile("ssl/ca.crt", "")
+		if err != nil {
+			log.Fatalf("Error while loading CA trust certificate: %v\n", err)
+		}
+
+		opts = append(opts, grpc.WithTransportCredentials(creds))
+	}
+
+	conn, err := grpc.NewClient(svrAddr, opts...) // nb: using NewClient instead of Dial
 	if err != nil {
 		log.Fatalf("Failed to connect: %v\n", err)
 	}
@@ -21,9 +31,9 @@ func main() {
 
 	c := pb.NewGreetServiceClient(conn)
 
-	// doGreet(c)
+	doGreet(c)
 	// doGreetManyTimes(c)
 	// doLongGreet(c)
 	// doGreetEveryone(c)
-	doGreetWithDeadline(c, 3*time.Second)
+	// doGreetWithDeadline(c, 3*time.Second)
 }
